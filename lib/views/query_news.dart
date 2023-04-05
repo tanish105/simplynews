@@ -3,15 +3,15 @@ import 'package:newsapp/Helper/news.dart';
 import '../models/article_model.dart';
 import 'article_view.dart';
 
-class CategoryNews extends StatefulWidget {
-  final String category;
-  const CategoryNews({Key? key, required this.category}) : super(key: key);
+class QueryNews extends StatefulWidget {
+  QueryNews({Key? key, required this.query}) : super(key: key);
+  String query;
 
   @override
-  State<CategoryNews> createState() => _CategoryNewsState();
+  State<QueryNews> createState() => _QueryNewsState();
 }
 
-class _CategoryNewsState extends State<CategoryNews> {
+class _QueryNewsState extends State<QueryNews> {
   List<ArticleModel> articles = [];
 
   bool _loading = true;
@@ -20,17 +20,18 @@ class _CategoryNewsState extends State<CategoryNews> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCategoryNews();
+    getQueryNews();
   }
 
-    getCategoryNews() async{
-    CategoryNewsClass newsClass = CategoryNewsClass();
-    await newsClass.getNews(widget.category);
+  getQueryNews() async{
+    getqueryNews newsClass = getqueryNews(widget.query);
+    await newsClass.queryNews(widget.query);
     articles = newsClass.news;
     setState(() {
       _loading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

@@ -19,9 +19,16 @@ class _ArticleViewState extends State<ArticleView> {
   final Completer<WebViewController> _completer =
       Completer<WebViewController>();
   // final WebViewController webViewController = WebViewController();
-  final AndroidWebViewController androidController = WebViewController().platform as AndroidWebViewController;
-  // late WebViewController webViewController;
-  // bool isloading = true;
+  late final WebViewController controller;
+
+  @override
+  void initState() {
+    super.initState();
+    controller = WebViewController()
+      ..loadRequest(
+        Uri.parse(widget.blogUrl),
+      );
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,14 +60,10 @@ class _ArticleViewState extends State<ArticleView> {
         elevation: 0.0,
       ),
       body: Container(
-        // child: WebView(
-        //   initialUrl: widget.blogUrl,
-        //   onWebViewCreated: ((WebViewController webViewController){
-        //     _completer.complete(webViewController);
-        //   }),
-        // ),
+        height: MediaQuery.of(context).size.height,
+        width: MediaQuery.of(context).size.width,
         child: WebViewWidget(
-          controller: androidController.currentUrl(widget.blogUrl),
+          controller: controller,
         ),
         ),
       );

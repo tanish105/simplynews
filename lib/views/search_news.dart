@@ -1,17 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:newsapp/Helper/news.dart';
+
 import '../models/article_model.dart';
 import 'article_view.dart';
 
-class CategoryNews extends StatefulWidget {
-  final String category;
-  const CategoryNews({Key? key, required this.category}) : super(key: key);
+class SearchNews extends StatefulWidget {
+  SearchNews({Key? key, required this.country}) : super(key: key);
+  String country;
 
   @override
-  State<CategoryNews> createState() => _CategoryNewsState();
+  State<SearchNews> createState() => _SearchNewsState();
 }
 
-class _CategoryNewsState extends State<CategoryNews> {
+class _SearchNewsState extends State<SearchNews> {
   List<ArticleModel> articles = [];
 
   bool _loading = true;
@@ -20,17 +21,18 @@ class _CategoryNewsState extends State<CategoryNews> {
   void initState() {
     // TODO: implement initState
     super.initState();
-    getCategoryNews();
+    getSearchNews();
   }
 
-    getCategoryNews() async{
-    CategoryNewsClass newsClass = CategoryNewsClass();
-    await newsClass.getNews(widget.category);
+  getSearchNews() async{
+    getCountryNews newsClass = getCountryNews(widget.country);
+    await newsClass.CountryNews(widget.country);
     articles = newsClass.news;
     setState(() {
       _loading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

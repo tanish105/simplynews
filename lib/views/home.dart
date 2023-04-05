@@ -4,6 +4,9 @@ import 'package:newsapp/Helper/data.dart';
 import 'package:newsapp/Helper/news.dart';
 import 'package:newsapp/models/category_model.dart';
 import 'package:newsapp/views/article_view.dart';
+import 'package:newsapp/views/category_news.dart';
+import 'package:newsapp/views/query_news.dart';
+import 'package:newsapp/views/search_news.dart';
 import '../models/article_model.dart';
 
 class Home extends StatefulWidget {
@@ -16,7 +19,8 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   List<CategoryModel> categories = [];
   List<ArticleModel> articles = [];
-
+  String country = 'in';
+  String query = "";
   bool _loading = true;
 
   @override
@@ -24,17 +28,21 @@ class _HomeState extends State<Home> {
     // TODO: implement initState
     super.initState();
     categories = getCategories();
+    setState(() {
+      country;
+    });
     getNews();
   }
 
-  getNews() async{
-    News newsClass = News();
+  getNews() async {
+    News newsClass = News(country: country);
     await newsClass.getNews();
     articles = newsClass.news;
     setState(() {
       _loading = false;
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -54,41 +62,116 @@ class _HomeState extends State<Home> {
         ),
         elevation: 0.0,
       ),
-      body: _loading ? Center(
-        child: Container(
-          child: CircularProgressIndicator(),
-        ),
-      ) : SingleChildScrollView(
-        child: Container(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
-            children: [
-              ///categories
-              Container(
-                height: 70,
-                child: ListView.builder(
-                  itemBuilder: (context, index) {
-                    return CategoryTile(
-                      imageUrl: categories[index].ImageURL,
-                      categoryName: categories[index].CategoryName,
-                    );
-                  },
-                  itemCount: categories.length,
-                  shrinkWrap: true,
-                  scrollDirection: Axis.horizontal,
+      body: _loading
+          ? Center(
+              child: Container(
+                child: CircularProgressIndicator(),
+              ),
+            )
+          : SingleChildScrollView(
+              child: Container(
+                padding: const EdgeInsets.symmetric(horizontal: 16),
+                child: Column(
+                  children: [
+                    ///categories
+                    Container(
+                      height: 70,
+                      child: ListView.builder(
+                        itemBuilder: (context, index) {
+                          return CategoryTile(
+                            imageUrl: categories[index].ImageURL,
+                            categoryName: categories[index].CategoryName,
+                          );
+                        },
+                        itemCount: categories.length,
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          icon: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      SearchNews(country: country),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.search),
+                          ),
+                          hintText: "Enter country code for news",
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: Colors.black26,
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          country = value;
+                          print(value);
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: EdgeInsets.all(10),
+                      child: TextFormField(
+                        decoration: InputDecoration(
+                          icon: IconButton(
+                            onPressed: () {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      QueryNews(query: query),
+                                ),
+                              );
+                            },
+                            icon: const Icon(Icons.search),
+                          ),
+                          hintText: "Enter hot topic!",
+                          enabledBorder: const OutlineInputBorder(
+                            borderSide: BorderSide(
+                              width: 3,
+                              color: Colors.black26,
+                            ),
+                          ),
+                        ),
+                        onChanged: (value) {
+                          query = value;
+                          print(value);
+                        },
+                      ),
+                    ),
+                    ///blogs
+                    Container(
+                      padding: const EdgeInsets.only(top: 16),
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        physics: ClampingScrollPhysics(),
+                        itemBuilder: (context, index) {
+                          return BlogTile(
+                            imageUrl: articles[index].urlToImage!,
+                            title: articles[index].title!,
+                            desc: articles[index].description!,
+                            url: articles[index].url!,
+                          );
+                        },
+                        itemCount: articles.length,
+                      ),
+                    ),
+                  ],
                 ),
               ),
-              ///blogs
-              Container(
-                padding: const EdgeInsets.only(top: 16),
-                child: ListView.builder(shrinkWrap: true,physics: ClampingScrollPhysics(),itemBuilder: (context,index){
-                  return BlogTile(imageUrl: articles[index].urlToImage!, title: articles[index].title!, desc: articles[index].description!,url: articles[index].url!,);
-                },itemCount: articles.length,),
-              ),
-            ],
-          ),
-        ),
-      ),
+            ),
+      // floatingActionButton: FloatingActionButton(child: const Icon(Icons.add),onPressed: (){
+      //   Navigator.push(context, MaterialPageRoute(builder: (context) => SearchNews(country: country),),);
+      // }),
     );
   }
 }
@@ -102,7 +185,15 @@ class CategoryTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){},
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) =>
+                CategoryNews(category: categoryName.toString().toLowerCase()),
+          ),
+        );
+      },
       child: Container(
         margin: EdgeInsets.only(right: 16),
         child: Stack(
@@ -112,7 +203,8 @@ class CategoryTile extends StatelessWidget {
               child: CachedNetworkImage(
                 width: 120,
                 height: 70,
-                fit: BoxFit.cover, imageUrl: imageUrl,
+                fit: BoxFit.cover,
+                imageUrl: imageUrl,
               ),
             ),
             Container(
@@ -139,30 +231,54 @@ class CategoryTile extends StatelessWidget {
 }
 
 class BlogTile extends StatelessWidget {
-  const BlogTile({Key? key, required this.imageUrl, required this.title, required this.desc, required this.url}) : super(key: key);
+  const BlogTile(
+      {Key? key,
+      required this.imageUrl,
+      required this.title,
+      required this.desc,
+      required this.url})
+      : super(key: key);
 
-  final String imageUrl,title,desc,url;
+  final String imageUrl, title, desc, url;
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: (){
-        Navigator.push(context, MaterialPageRoute(builder: (context) => ArticleView(blogUrl: url),),);
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => ArticleView(blogUrl: url),
+          ),
+        );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
         child: Column(
           children: [
-            ClipRRect(borderRadius: BorderRadius.circular(6), child: Image.network(imageUrl)),
-            const SizedBox(height: 8,),
-            Text(title,style: const TextStyle(fontSize: 18,color: Colors.black87,fontWeight: FontWeight.w500
-            ),),
-            const SizedBox(height: 8,),
-            Text(desc,style: const TextStyle(color: Colors.black54),),
+            ClipRRect(
+                borderRadius: BorderRadius.circular(6),
+                child: Image.network(imageUrl)),
+            const SizedBox(
+              height: 8,
+            ),
+            Text(
+              title,
+              style: const TextStyle(
+                  fontSize: 18,
+                  color: Colors.black87,
+                  fontWeight: FontWeight.w500),
+            ),
+            const SizedBox(
+              height: 8,
+            ),
+            Text(
+              desc,
+              style: const TextStyle(color: Colors.black54),
+            ),
           ],
         ),
       ),
     );
   }
 }
-
