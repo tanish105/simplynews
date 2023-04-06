@@ -9,12 +9,9 @@ class News{
   News({this.country="in"});
   Future<void> getNews() async{
     String url = "https://newsapi.org/v2/top-headlines?country=$country&apiKey=7bef18eb0a1c444e8580716ad648a103";
-    //var response = await Uri.tryParse("https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=7bef18eb0a1c444e8580716ad648a103");
     http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
-    // print("Outside IF");
     if(jsonData['status'] == "ok"){
-      // print(jsonData);
       jsonData["articles"].forEach((element){
         if(element["urlToImage"] != null && element["description"] != null ){
           ArticleModel articleModel = ArticleModel(author: element['author'], title: element['title'], description: element['description'], url: element['url'], urlToImage: element['urlToImage'], content: element['content']);
@@ -30,12 +27,9 @@ class CategoryNewsClass{
 
   Future<void> getNews(String category) async{
     String url = "https://newsapi.org/v2/top-headlines?country=in&category=$category&apiKey=7bef18eb0a1c444e8580716ad648a103";
-    //var response = await Uri.tryParse("https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=7bef18eb0a1c444e8580716ad648a103");
     http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
-    // print("Outside IF");
     if(jsonData['status'] == "ok"){
-      // print(jsonData);
       jsonData["articles"].forEach((element){
         if(element["urlToImage"] != null && element["description"] != null ){
           ArticleModel articleModel = ArticleModel(author: element['author'], title: element['title'], description: element['description'], url: element['url'], urlToImage: element['urlToImage'], content: element['content']);
@@ -54,12 +48,9 @@ class getCountryNews{
 
   Future<void> CountryNews(String country) async{
     String url = "https://newsapi.org/v2/top-headlines?country=$country&apiKey=7bef18eb0a1c444e8580716ad648a103";
-    //var response = await Uri.tryParse("https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=7bef18eb0a1c444e8580716ad648a103");
     http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
-    // print("Outside IF");
     if(jsonData['status'] == "ok"){
-      // print(jsonData);
       jsonData["articles"].forEach((element){
         if(element["urlToImage"] != null && element["description"] != null ){
           ArticleModel articleModel = ArticleModel(author: element['author'], title: element['title'], description: element['description'], url: element['url'], urlToImage: element['urlToImage'], content: element['content']);
@@ -79,12 +70,9 @@ class getqueryNews{
   Future<void> queryNews(String query) async{
     print(query);
     String url = "https://newsapi.org/v2/everything?q=$query&from=2023-03-05&sortBy=publishedAt&apiKey=7bef18eb0a1c444e8580716ad648a103";
-    //var response = await Uri.tryParse("https://newsapi.org/v2/top-headlines?country=us&category=business&apiKey=7bef18eb0a1c444e8580716ad648a103");
     http.Response response = await http.get(Uri.parse(url));
     var jsonData = jsonDecode(response.body);
-    // print("Outside IF");
     if(jsonData['status'] == "ok"){
-      // print(jsonData);
       jsonData["articles"].forEach((element){
         if(element["urlToImage"] != null && element["description"] != null ){
           ArticleModel articleModel = ArticleModel(author: element['author'], title: element['title'], description: element['description'], url: element['url'], urlToImage: element['urlToImage'], content: element['content']);

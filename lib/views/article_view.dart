@@ -33,17 +33,18 @@ class _ArticleViewState extends State<ArticleView> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
         leading: const BackButton(color: Colors.black,),
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(
               "Simply",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
             Text(
               "News",
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Colors.white),
             ),
           ],
         ),

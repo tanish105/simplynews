@@ -8,6 +8,8 @@ import 'package:newsapp/views/category_news.dart';
 import 'package:newsapp/views/query_news.dart';
 import 'package:newsapp/views/search_news.dart';
 import '../models/article_model.dart';
+import 'package:newsapp/Helper/consts.dart';
+import 'package:newsapp/Helper/consts1.dart';
 
 class Home extends StatefulWidget {
   const Home({Key? key}) : super(key: key);
@@ -47,16 +49,81 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: Colors.blue,
+        actions: [
+          PopupMenuButton(itemBuilder: (context) {
+            return [
+              PopupMenuItem(
+                value: 0,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    icon: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => SearchNews(country: country),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                    hintText: "Enter country code",
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 3,
+                        color: Colors.black26,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    country = value;
+                  },
+                ),
+              ),
+              const PopupMenuItem(child: SizedBox(height: 0.5,)),
+              PopupMenuItem(
+                value: 1,
+                child: TextFormField(
+                  decoration: InputDecoration(
+                    icon: IconButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => QueryNews(query: query),
+                          ),
+                        );
+                      },
+                      icon: const Icon(Icons.search),
+                    ),
+                    hintText: "Enter hot topic!",
+                    enabledBorder: const OutlineInputBorder(
+                      borderSide: BorderSide(
+                        width: 3,
+                        color: Colors.black26,
+                      ),
+                    ),
+                  ),
+                  onChanged: (value) {
+                    query = value;
+                  },
+                ),
+              ),
+            ];
+          })
+        ],
         title: const Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
+            Padding(padding: EdgeInsets.only(left: 25),),
             Text(
               "Simply",
-              style: TextStyle(color: Colors.black),
+              style: TextStyle(color: Colors.white),
             ),
             Text(
               "News",
-              style: TextStyle(color: Colors.blue),
+              style: TextStyle(color: Colors.white),
             ),
           ],
         ),
@@ -69,6 +136,7 @@ class _HomeState extends State<Home> {
               ),
             )
           : SingleChildScrollView(
+        padding: const EdgeInsets.only(top: 16),
               child: Container(
                 padding: const EdgeInsets.symmetric(horizontal: 16),
                 child: Column(
@@ -88,66 +156,6 @@ class _HomeState extends State<Home> {
                         scrollDirection: Axis.horizontal,
                       ),
                     ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          icon: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      SearchNews(country: country),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.search),
-                          ),
-                          hintText: "Enter country code for news",
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 3,
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          country = value;
-                          print(value);
-                        },
-                      ),
-                    ),
-                    Padding(
-                      padding: EdgeInsets.all(10),
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          icon: IconButton(
-                            onPressed: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      QueryNews(query: query),
-                                ),
-                              );
-                            },
-                            icon: const Icon(Icons.search),
-                          ),
-                          hintText: "Enter hot topic!",
-                          enabledBorder: const OutlineInputBorder(
-                            borderSide: BorderSide(
-                              width: 3,
-                              color: Colors.black26,
-                            ),
-                          ),
-                        ),
-                        onChanged: (value) {
-                          query = value;
-                          print(value);
-                        },
-                      ),
-                    ),
                     ///blogs
                     Container(
                       padding: const EdgeInsets.only(top: 16),
@@ -155,7 +163,7 @@ class _HomeState extends State<Home> {
                         shrinkWrap: true,
                         physics: ClampingScrollPhysics(),
                         itemBuilder: (context, index) {
-                          return BlogTile(
+                          return BlogTile1(
                             imageUrl: articles[index].urlToImage!,
                             title: articles[index].title!,
                             desc: articles[index].description!,
@@ -169,116 +177,6 @@ class _HomeState extends State<Home> {
                 ),
               ),
             ),
-      // floatingActionButton: FloatingActionButton(child: const Icon(Icons.add),onPressed: (){
-      //   Navigator.push(context, MaterialPageRoute(builder: (context) => SearchNews(country: country),),);
-      // }),
-    );
-  }
-}
-
-class CategoryTile extends StatelessWidget {
-  final imageUrl, categoryName;
-
-  const CategoryTile({Key? key, this.imageUrl, this.categoryName})
-      : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) =>
-                CategoryNews(category: categoryName.toString().toLowerCase()),
-          ),
-        );
-      },
-      child: Container(
-        margin: EdgeInsets.only(right: 16),
-        child: Stack(
-          children: [
-            ClipRRect(
-              borderRadius: BorderRadius.circular(6),
-              child: CachedNetworkImage(
-                width: 120,
-                height: 70,
-                fit: BoxFit.cover,
-                imageUrl: imageUrl,
-              ),
-            ),
-            Container(
-              alignment: Alignment.center,
-              width: 120,
-              height: 70,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(6),
-                color: Colors.black26,
-              ),
-              child: Text(
-                categoryName,
-                style: const TextStyle(
-                    color: Colors.white,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w500),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class BlogTile extends StatelessWidget {
-  const BlogTile(
-      {Key? key,
-      required this.imageUrl,
-      required this.title,
-      required this.desc,
-      required this.url})
-      : super(key: key);
-
-  final String imageUrl, title, desc, url;
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => ArticleView(blogUrl: url),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 16),
-        child: Column(
-          children: [
-            ClipRRect(
-                borderRadius: BorderRadius.circular(6),
-                child: Image.network(imageUrl)),
-            const SizedBox(
-              height: 8,
-            ),
-            Text(
-              title,
-              style: const TextStyle(
-                  fontSize: 18,
-                  color: Colors.black87,
-                  fontWeight: FontWeight.w500),
-            ),
-            const SizedBox(
-              height: 8,
-            ),
-            Text(
-              desc,
-              style: const TextStyle(color: Colors.black54),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }
